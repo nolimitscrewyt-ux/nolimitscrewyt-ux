@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eurovision Simulator 2026 - Country Selection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Country Selection Screen -->
+    <div class="container" id="countrySelectionScreen">
+        <header class="country-select-header">
+            <h1 class="title">Eurovision Simulator 2026</h1>
+            <h2 class="subtitle">Select your country to begin</h2>
+        </header>
+        
+        <div class="country-select-toolbar">
+            <div class="search-bar">
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search by name or code..." autocomplete="off">
+            </div>
+            <div class="toolbar-actions">
+                <span class="country-count" id="countryCount"></span>
+                <button type="button" class="year-switch-btn" id="yearSwitchBtn">Set back to 2025</button>
+            </div>
+        </div>
+        
+        <div class="country-grid-wrapper">
+            <div class="country-grid" id="countryGrid">
+                <!-- Countries will be dynamically inserted here -->
+            </div>
+            <div class="country-grid-empty" id="countryGridEmpty" style="display: none;">
+                <span class="empty-icon">🌍</span>
+                <p class="empty-title">No countries found</p>
+                <p class="empty-hint">Try a different search term</p>
+            </div>
+        </div>
+        
+        <div class="selected-country" id="selectedCountry" style="display: none;">
+            <div class="selected-content">
+                <div class="selected-info" id="selectedInfo"></div>
+                <button type="button" class="confirm-btn" id="confirmBtn">Confirm & continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song Details Screen -->
+    <div class="container" id="songDetailsScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle" id="countrySubtitle">Create Your Entry</h2>
+        </header>
+        
+        <div class="song-form-container">
+            <form id="songForm" class="song-form">
+                <div class="form-section">
+                    <label for="songName" class="form-label">Song Name *</label>
+                    <input type="text" id="songName" name="songName" class="form-input" placeholder="Enter your song title" required>
+                </div>
+
+                <div class="form-section">
+                    <label for="artistName" class="form-label">Artist Name *</label>
+                    <input type="text" id="artistName" name="artistName" class="form-input" placeholder="Enter artist or band name" required>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label">Song Style/Genre *</label>
+                    <div class="style-grid" id="styleGrid">
+                        <!-- Style options will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label for="language" class="form-label">Language</label>
+                    <select id="language" name="language" class="form-select">
+                        <option value="english">English</option>
+                        <option value="native">Native Language</option>
+                        <option value="mixed">Mixed Languages</option>
+                        <option value="instrumental">Instrumental</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <label for="tempo" class="form-label">Tempo</label>
+                    <select id="tempo" name="tempo" class="form-select">
+                        <option value="slow">Slow Ballad</option>
+                        <option value="medium">Medium Tempo</option>
+                        <option value="upbeat">Upbeat</option>
+                        <option value="dance">Dance/Electronic</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <label for="description" class="form-label">Song Description</label>
+                    <textarea id="description" name="description" class="form-textarea" rows="4" placeholder="Describe your song, its message, or inspiration..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="back-btn" id="backBtn">← Back to Country Selection</button>
+                    <button type="button" class="qualifiers-btn" id="qualifiersBtn">🎵 Qualifiers</button>
+                    <button type="submit" class="submit-btn" id="submitBtn">Submit Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Semi-Final 1 Screen -->
+    <div class="container" id="semiFinal1Screen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Semi-Final 1</h2>
+        </header>
+        
+        <div class="semi-final-container">
+            <div class="semi-final-info">
+                <h3>Welcome to Semi-Final 1!</h3>
+                <p>Your entry is participating in this semi-final.</p>
+                <div class="entry-preview" id="semiFinal1EntryPreview"></div>
+                <button class="start-performance-btn" id="startSemiFinal1Btn">View Standings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semi-Final 2 Screen -->
+    <div class="container" id="semiFinal2Screen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Semi-Final 2</h2>
+        </header>
+        
+        <div class="semi-final-container">
+            <div class="semi-final-info">
+                <h3>Welcome to Semi-Final 2!</h3>
+                <p>Your entry is participating in this semi-final.</p>
+                <div class="entry-preview" id="semiFinal2EntryPreview"></div>
+                <button class="start-performance-btn" id="startSemiFinal2Btn">View Standings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semi-Final 1 Standings Screen -->
+    <div class="container" id="semiFinal1StandingsScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Semi-Final 1 - Standings</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3>Semi-Final 1 Results</h3>
+                <p>Voting results and final standings for Semi-Final 1.</p>
+                
+                <div class="standings-container">
+                    <div class="standings-table-wrapper">
+                        <table class="standings-table" id="semiFinal1StandingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Country</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="semiFinal1StandingsTableBody">
+                                <!-- Standings will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section" id="semiFinal1StandingsUserSection">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="semiFinal1StandingsUserQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="continue-btn" id="continueSemiFinal1Btn">View Qualifiers</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semi-Final 2 Standings Screen -->
+    <div class="container" id="semiFinal2StandingsScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Semi-Final 2 - Standings</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3>Semi-Final 2 Results</h3>
+                <p>Voting results and final standings for Semi-Final 2.</p>
+                
+                <div class="standings-container">
+                    <div class="standings-table-wrapper">
+                        <table class="standings-table" id="semiFinal2StandingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Country</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="semiFinal2StandingsTableBody">
+                                <!-- Standings will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section" id="semiFinal2StandingsUserSection">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="semiFinal2StandingsUserQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="continue-btn" id="continueSemiFinal2Btn">View Qualifiers</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Draw Screen -->
+    <div class="container" id="finalDrawScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Final Draw - Qualifiers</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3 id="finalDrawTitle">Semi-Final Qualifiers</h3>
+                <p id="finalDrawSubtitle">The following countries have qualified for the Grand Final!</p>
+                
+                <div class="qualifiers-section">
+                    <h4 class="qualifiers-header" id="qualifiersHeader">Qualified Countries (10)</h4>
+                    <div class="qualifiers-grid" id="qualifiersGrid">
+                        <!-- Qualifiers will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="qualifiers-section" id="otherSemiFinalSection" style="display: none;">
+                    <h4 class="qualifiers-header" id="otherSemiFinalHeader">Other Semi-Final Qualifiers (10)</h4>
+                    <div class="qualifiers-grid" id="otherSemiFinalGrid">
+                        <!-- Other semi-final qualifiers will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="qualifiers-section" id="automaticQualifiersSection" style="display: none;">
+                    <h4 class="qualifiers-header">Automatic Qualifiers</h4>
+                    <div class="qualifiers-grid" id="automaticQualifiersGrid">
+                        <!-- Automatic qualifiers will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="userQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="continue-btn" id="continueToFinalBtn" style="display: none;">Continue to Grand Final</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grand Final Screen -->
+    <div class="container" id="grandFinalScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Grand Final</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3>Grand Final Participants</h3>
+                <p>All countries competing in the Grand Final!</p>
+                
+                <div class="qualifiers-section">
+                    <h4 class="qualifiers-header">All Finalists</h4>
+                    <div class="qualifiers-grid" id="finalParticipantsGrid">
+                        <!-- All final participants will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="finalUserQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="continue-btn" id="showJuryVotingBtn">View Jury Voting & Standings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jury Voting Animation Screen -->
+    <div class="container" id="juryVotingAnimationScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Jury Voting</h2>
+        </header>
+        
+        <div class="jury-voting-container">
+            <div class="jury-voting-info">
+                <div class="voting-country-header">
+                    <h3 id="votingCountryName">Country Name</h3>
+                    <p id="votingCountrySubtitle">is giving their points...</p>
+                </div>
+                
+                <div class="jury-content-wrapper">
+                    <div class="jury-points-section">
+                        <h4 class="qualifiers-header">Points Being Given</h4>
+                        <div class="jury-points-display" id="juryPointsDisplay">
+                            <!-- Points will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="live-standings-section">
+                        <h4 class="qualifiers-header">Live Standings</h4>
+                        <div class="live-standings-container">
+                            <div class="standings-table-wrapper">
+                                <table class="standings-table live-standings-table" id="liveStandingsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Country</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="liveStandingsTableBody">
+                                        <!-- Live standings will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="jury-voting-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="votingProgressFill"></div>
+                    </div>
+                    <p id="votingProgressText">Country 1 of 26</p>
+                </div>
+                
+                <button class="skip-btn" id="skipJuryVotingBtn">Skip Animation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Standings Screen -->
+    <div class="container" id="finalStandingsScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Grand Final - Jury Voting & Standings</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3>Jury Voting Results</h3>
+                <p>Each country awards 12, 10, 8, 6, 5, 4, 2, and 1 points to their top 8 countries.</p>
+                
+                <div class="standings-container">
+                    <div class="standings-table-wrapper">
+                        <table class="standings-table" id="standingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Country</th>
+                                    <th>Total Points</th>
+                                    <th>12pts</th>
+                                    <th>10pts</th>
+                                    <th>8pts</th>
+                                    <th>6pts</th>
+                                    <th>5pts</th>
+                                    <th>4pts</th>
+                                    <th>2pts</th>
+                                    <th>1pt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="standingsTableBody">
+                                <!-- Standings will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section" id="finalStandingsUserSection">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="standingsUserQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="continue-btn" id="showPublicVoteBtn">Add Public Vote (Televote)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combined Results Screen (Jury + Public Vote) -->
+    <div class="container" id="combinedResultsScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Grand Final - Combined Results (Jury + Public Vote)</h2>
+        </header>
+        
+        <div class="final-draw-container">
+            <div class="final-draw-info">
+                <h3>Final Standings</h3>
+                <p>Combined results from Jury Voting and Public Vote (Televote).</p>
+                
+                <div class="standings-container">
+                    <div class="standings-table-wrapper">
+                        <table class="standings-table" id="combinedStandingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Country</th>
+                                    <th>Total</th>
+                                    <th>Jury</th>
+                                    <th>Public</th>
+                                    <th>12pts</th>
+                                    <th>10pts</th>
+                                    <th>8pts</th>
+                                    <th>6pts</th>
+                                    <th>5pts</th>
+                                    <th>4pts</th>
+                                    <th>2pts</th>
+                                    <th>1pt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="combinedStandingsTableBody">
+                                <!-- Combined standings will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="user-qualifier-section" id="combinedResultsUserSection">
+                    <h4 class="qualifiers-header">Your Entry</h4>
+                    <div class="user-qualifier-card" id="combinedResultsUserQualifierCard">
+                        <!-- User's entry will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Internal Qualifiers Screen -->
+    <div class="container" id="internalQualifiersScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Internal Qualifiers</h2>
+        </header>
+        
+        <div class="internal-qualifiers-container">
+            <div class="internal-qualifiers-info">
+                <h3>Manage Your Internal Selection</h3>
+                <p>Add up to 14 songs for your country's internal qualifier. Each song will compete with jury and public voting.</p>
+                
+                <div class="songs-management-section">
+                    <div class="songs-list" id="songsList">
+                        <!-- Songs will be dynamically inserted here -->
+                    </div>
+                    
+                    <div class="song-buttons-container">
+                        <button class="add-song-btn" id="addSongBtn">+ Add Song</button>
+                        <button class="random-song-btn" id="randomSongBtn">🎲 Generate Random Song</button>
+                    </div>
+                </div>
+                
+                <div class="voting-section" id="votingSection" style="display: none;">
+                    <h4 class="qualifiers-header">Voting</h4>
+                    <p>Vote for your favorite songs using jury and public voting.</p>
+                    <button class="start-voting-btn" id="startVotingBtn">Start Voting</button>
+                </div>
+                
+                <div class="results-section" id="resultsSection" style="display: none;">
+                    <h4 class="qualifiers-header">Results</h4>
+                    <div class="results-table-wrapper" id="resultsTableWrapper">
+                        <!-- Results will be dynamically inserted here -->
+                    </div>
+                    <button class="continue-btn" id="useWinnerBtn" style="display: none; margin-top: 20px;">Use Winner for Eurovision Entry</button>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="back-btn" id="backFromQualifiersBtn">← Back to Country Selection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Internal Qualifiers Jury Voting Animation Screen -->
+    <div class="container" id="internalJuryVotingScreen" style="display: none;">
+        <header>
+            <h1 class="title">🎵 Eurovision Simulator 2026 🎵</h1>
+            <h2 class="subtitle">Internal Qualifiers - Jury Voting</h2>
+        </header>
+        
+        <div class="jury-voting-container">
+            <div class="jury-voting-info">
+                <div class="voting-country-header">
+                    <h3 id="internalJuryMemberName">Jury Member 1</h3>
+                    <p id="internalJuryMemberSubtitle">is giving their points...</p>
+                </div>
+                
+                <div class="jury-content-wrapper">
+                    <div class="jury-points-section">
+                        <h4 class="qualifiers-header">Points Being Given</h4>
+                        <div class="jury-points-display" id="internalJuryPointsDisplay">
+                            <!-- Points will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="live-standings-section">
+                        <h4 class="qualifiers-header">Live Standings</h4>
+                        <div class="live-standings-container">
+                            <div class="standings-table-wrapper">
+                                <table class="standings-table live-standings-table" id="internalLiveStandingsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Song</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="internalLiveStandingsTableBody">
+                                        <!-- Live standings will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="jury-voting-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="internalVotingProgressFill"></div>
+                    </div>
+                    <p id="internalVotingProgressText">Jury Member 1 of 5</p>
+                </div>
+                
+                <button class="skip-btn" id="skipInternalJuryVotingBtn">Skip Animation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Song Modal -->
+    <div class="modal-overlay" id="songModal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add Song</h3>
+            <form id="songModalForm">
+                <div class="form-section">
+                    <label for="modalSongName" class="form-label">Song Name *</label>
+                    <input type="text" id="modalSongName" class="form-input" placeholder="Enter song title" required>
+                </div>
+                <div class="form-section">
+                    <label for="modalArtistName" class="form-label">Artist Name *</label>
+                    <input type="text" id="modalArtistName" class="form-input" placeholder="Enter artist name" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="back-btn" id="cancelSongBtn">Cancel</button>
+                    <button type="submit" class="submit-btn" id="saveSongBtn">Save Song</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="countries.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
